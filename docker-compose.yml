@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  app-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: adminbase
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db-data/:/var/lib/postgresql/data/
+
+  app-server:
+    build:
+      context: ./app-server
+      dockerfile: Dockerfile
+    ports:
+      - '3001:3001'
+    depends_on:
+      - app-db
+
+  app-ui:
+    hostname: app-ui
+    build:
+      context: ./app-ui
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    depends_on:
+      - app-server
